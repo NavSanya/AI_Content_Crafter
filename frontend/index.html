@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Content Crafter</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Content Crafter</h1>
+        
+        <textarea id="userInput" placeholder="Enter keywords or prompt..."></textarea>
+
+        <div class="options">
+            <label for="contentType">Select Content Type:</label>
+            <select id="contentType">
+                <option value="Marketing Copy">Marketing Copy</option>
+                <option value="Blog Outline">Blog Outline</option>
+                <option value="Social Media Caption">Social Media Caption</option>
+                <option value="Product Description">Product Description</option>
+            </select>
+        </div>
+
+        <button id="generateBtn">Generate Content</button>
+
+        <div id="loading" class="hidden">Generating...</div>
+
+        <div id="outputSection" class="hidden">
+            <h2>Generated Content:</h2>
+            <pre id="output"></pre>
+        </div>
+
+        <div id="errorMsg" class="error hidden"></div>
+    </div>
+
+    <div id="output"></div>
+
+
+    <script src="js/main.js"></script>
+</body>
+</html>
