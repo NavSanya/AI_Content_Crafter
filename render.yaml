@@ -1,0 +1,24 @@
+services:
+  # Backend Flask API
+  - type: web
+    name: ai-content-crafter-backend
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: gunicorn backend.app:app
+    envVars:
+      - key: AIzaSyBD9JriAVtEVFYTvhJEPe0FDp-Dzrtpq3I
+        sync: false
+    healthCheckPath: /
+
+  # Frontend Static Site
+  - type: static
+    name: ai-content-crafter-frontend
+    plan: free
+    buildCommand: |
+      # Copy frontend files to build directory
+      mkdir -p build
+      cp -r frontend/* build/
+      # Update API endpoint in JavaScript
+      sed -i 's|http://127.0.0.1:5000|https://ai-content-crafter-backend.onrender.com|g' build/js/main.js
+    publishPath: build

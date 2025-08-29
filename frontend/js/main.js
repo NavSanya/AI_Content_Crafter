@@ -21,7 +21,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     output.innerHTML = '';
 
     try {
-        const response = await fetch('http://127.0.0.1:5000/generate', {
+        const response = await fetch('https://your-backend-service-name.onrender.com/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -38,48 +38,72 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         const data = await response.json();
 
         const generated = data.generated_content || 'No content generated.';
-        const options = generated.split(/\*\*Option \d:/);
+
+        // NEW: Use a regex with a global flag to find all options
+        const optionsRegex = /(Option \d+\s*(?:\([^)]*\))?:)([\s\S]*?)(?=Option \d+\s*(?:\([^)]*\))?:|$)/g;
+        let match;
+        const optionBlocks = [];
+
+        // Find all matches
+        while ((match = optionsRegex.exec(generated)) !== null) {
+            optionBlocks.push({
+                heading: match[1],
+                content: match[2].trim()
+            });
+        }
 
         output.innerHTML = ''; // Clear previous output
 
-        options.forEach((opt, index) => {
-            if (opt.trim() === '') return;
+        if (optionBlocks.length > 0) {
+            // If options are found, process each one
+            optionBlocks.forEach(optBlock => {
+                const container = document.createElement('div');
+                container.classList.add('option-box');
 
+                const heading = document.createElement('h3');
+                heading.textContent = optBlock.heading.trim();
+                container.appendChild(heading);
+
+                const content = document.createElement('div');
+                content.innerHTML = marked.parse(optBlock.content);
+                container.appendChild(content);
+
+                const copyBtn = document.createElement('button');
+                copyBtn.textContent = 'Copy Option';
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(content.textContent.trim())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied!';
+                            setTimeout(() => copyBtn.textContent = 'Copy Option', 1500);
+                        })
+                        .catch(() => alert('Failed to copy. Please copy manually.'));
+                });
+                container.appendChild(copyBtn);
+
+                output.appendChild(container);
+            });
+        } else {
+            // If no specific options are found, render the entire content in a single box
             const container = document.createElement('div');
-            container.style.border = '1px solid #ccc';
-            container.style.padding = '1em';
-            container.style.marginBottom = '1em';
-            container.style.background = '#f9f9f9';
-            container.style.borderRadius = '8px';
-
-            const heading = document.createElement('h3');
-            heading.textContent = `Option ${index}`;
-            heading.style.marginTop = '0';
-
-            const content = document.createElement('pre');
-            content.style.whiteSpace = 'pre-wrap';
-            content.textContent = opt.trim();
+            container.classList.add('option-box');
+            const content = document.createElement('div');
+            content.innerHTML = marked.parse(generated.trim());
+            container.appendChild(content);
 
             const copyBtn = document.createElement('button');
-            copyBtn.textContent = 'Copy Option';
-            copyBtn.style.marginTop = '0.5em';
-            copyBtn.style.cursor = 'pointer';
-
+            copyBtn.textContent = 'Copy Text';
             copyBtn.addEventListener('click', () => {
-                navigator.clipboard.writeText(opt.trim())
+                navigator.clipboard.writeText(content.textContent.trim())
                     .then(() => {
                         copyBtn.textContent = 'Copied!';
-                        setTimeout(() => copyBtn.textContent = 'Copy Option', 1500);
+                        setTimeout(() => copyBtn.textContent = 'Copy Text', 1500);
                     })
                     .catch(() => alert('Failed to copy. Please copy manually.'));
             });
-
-            container.appendChild(heading);
-            container.appendChild(content);
             container.appendChild(copyBtn);
 
             output.appendChild(container);
-        });
+        }
 
         outputSection.classList.remove('hidden');
 
