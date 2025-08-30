@@ -41,7 +41,7 @@
    - **Name**: `ai-content-crafter-frontend`
    - **Root Directory**: `frontend/`
    - **Build Command**: (leave empty)
-   - **Publish Directory**: `/`
+   - **Publish Directory**: `.`
    - **Plan**: Free
 
 5. **Deploy**: Click "Create Static Site"
