@@ -21,7 +21,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     output.innerHTML = '';
 
     try {
-        const response = await fetch('https://your-backend-service-name.onrender.com/generate', {
+        const response = await fetch('https://ai-content-crafter-backend.onrender.com/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
