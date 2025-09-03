@@ -7,7 +7,7 @@ services:
     buildCommand: pip install -r backend/requirements.txt
     startCommand: gunicorn backend.app:app
     envVars:
-      - key: AIzaSyBD9JriAVtEVFYTvhJEPe0FDp-Dzrtpq3I
+      - key: AIzaSyAMJMg2fkxX2t9Auo_oM6XfiYtzAAF5nzE
         sync: false
     healthCheckPath: /
 
